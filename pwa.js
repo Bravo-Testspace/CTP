@@ -1,0 +1,8 @@
+'use strict';
+let installPrompt=null;
+const installButton=document.createElement('button');installButton.textContent='Install on my phone';document.querySelector('footer').prepend(installButton);
+const installDialog=document.createElement('dialog');installDialog.innerHTML='<div class="dialogHead"><h2>Keep Crypto Lab on your phone</h2><button aria-label="Close installation help">×</button></div><p><strong>iPhone:</strong> Open the hosted link in Safari and sign in if asked. Tap Share, then Add to Home Screen, and choose Add.</p><p><strong>Android:</strong> Open the hosted link in Chrome and sign in if asked. Use Install app or Add to Home screen in the browser menu.</p><p>Open it once online before trying it offline. Your coins, practice account and journal save on this device. They do not sync with your computer. Download your progress to keep a backup.</p><p class="muted">The computer’s localhost preview cannot be used as the phone link. Use the published HTTPS address.</p>';document.body.append(installDialog);installDialog.querySelector('button').onclick=()=>installDialog.close();
+installButton.onclick=async()=>{if(installPrompt){await installPrompt.prompt();await installPrompt.userChoice;installPrompt=null}else installDialog.showModal()};
+window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event});
+window.addEventListener('appinstalled',()=>{installPrompt=null;installButton.textContent='Installation help'});
+if('serviceWorker' in navigator&&window.isSecureContext)window.addEventListener('load',()=>{navigator.serviceWorker.register('/sw.js').catch(()=>{installButton.textContent='Phone installation help'})});
